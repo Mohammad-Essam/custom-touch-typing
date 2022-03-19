@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Touch Typing Training</title>
+    <style>
+        *
+        {
+            box-sizing:border-box;
+        }
+        body
+        {
+            line-height: 1.5;
+            background-color: cornsilk;
+        }
+        word
+        {
+            display:inline;
+            font-size: 30px;
+            margin:2px;
+        }
+        char
+        {
+            display: inline;
+            border:solid transparent 2px;
+            background-color:lightblue;
+            margin:1px;
+        }
+        #stage2
+        {
+            padding : 20px;
+        }
+        button 
+        {
+            padding:10px 20px;
+        }
+        
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var text="";
+        var charArr=[];
+        var wordCount=0;
+        var charIndex=0;
+
+        function parse()
+        {
+            text=textarea.value;
+            charArr=text.split('');
+            alert("         loading text has succeeded\n when you get ready press 'go to typing '\n\n             Good luck with typing ")
+            textarea.value="";
+        }
+        function begin()
+        {
+            var arLang=false;
+            if(charArr[0]!=undefined&&charArr[1]!=undefined)
+            {
+            var html="";
+            stage1.style.display="none";
+            html+="<word id='word"+ (++wordCount)+"'>";
+            for(x in charArr)
+            {
+                if(charArr[x]==" ")
+                {
+                    html+="</word><word id=\"word"+(++wordCount)+"\"><char id=\"ch"+x+"\">"+charArr[x]+"</char></word> <word d=\"word"+(++wordCount)+"\">";
+                }
+                else
+                html+="<char id=\"ch"+x+"\">"+charArr[x]+"</char>";
+            }
+            html+="</word>";
+            stage2.innerHTML=html;
+
+            }
+            if(charArr[1].match(/[ا-ي]/)||charArr[0].match(/[ا-ي]/))
+            {
+                $("char").css("margin","0px");
+                $("word").css("margin","1px");
+                $('body').css("direction", "rtl")
+                $('char').css("border","none")
+            }
+
+            document.getElementById("ch"+0).style.borderBottom="solid 5px black";
+            document.addEventListener("keydown",
+            function(e)
+            {
+                c="ch"+(charIndex++);
+                //backspace key
+                if(e.keyCode==8)
+                {
+                    if(charIndex<2)charIndex=charIndex-1;
+                    else
+                    charIndex=charIndex-2;
+                    document.getElementById("ch"+charIndex).style.backgroundColor="lightblue";
+                    document.getElementById(c).style.backgroundColor="lightblue";
+                    document.getElementById(c).style.borderBottom="solid 5px transparent";
+                    document.getElementById("ch"+charIndex).style.borderBottom="solid 5px black";
+
+                }
+                //capture the real keys
+                else if (e.key==document.getElementById(c).innerHTML)
+                {
+                document.getElementById(c).style.backgroundColor="lightgreen";
+                document.getElementById(c).style.borderBottom="solid 5px transparent";
+
+                document.getElementById("ch"+charIndex).style.borderBottom="solid 5px black";
+                }
+                //the system keys
+                else if(e.shiftKey||e.ctrlKey||e.altKey)
+                {
+                    charIndex--;
+                }
+                //pressing the wrong keys
+                else
+                {
+                    charIndex--;
+                    document.getElementById(c).style.backgroundColor="red";
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <div id="stage1" style="text-align: center;">
+        <p>Enter the text that you want to train on here</p>
+    <textarea id="textarea" style="width:100%;height:500px;resize: none;"></textarea>
+    <button onclick="parse()" style="margin: 30px;" > load text</button>
+    <button onclick="begin()" style="margin: 30px;"> go to typing</button>
+    </div>  
+    <div id="stage2">
+    </div>
+</body>
+</html>
